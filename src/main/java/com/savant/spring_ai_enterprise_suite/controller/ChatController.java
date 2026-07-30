@@ -1,5 +1,6 @@
 package com.savant.spring_ai_enterprise_suite.controller;
 
+import com.savant.spring_ai_enterprise_suite.dto.ApiResponse;
 import com.savant.spring_ai_enterprise_suite.dto.ChatRequest;
 import com.savant.spring_ai_enterprise_suite.dto.ChatResponse;
 import com.savant.spring_ai_enterprise_suite.service.ChatService;
@@ -20,10 +21,12 @@ public class ChatController {
     }
 
     @PostMapping("/chat")
-    public ResponseEntity<ChatResponse> chat(@Valid @RequestBody ChatRequest request) {
-        log.info("---inside chat method---");
-        ChatResponse response = chatService.chat(request);
-        return ResponseEntity.ok(response);
+    public ApiResponse<ChatResponse> chat(@Valid @RequestBody ChatRequest request) {
+
+        return ApiResponse.success(
+                "AI response generated successfully.",
+                chatService.chat(request.message())
+        );
     }
 
 }
