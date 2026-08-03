@@ -4,6 +4,7 @@ import com.savant.spring_ai_enterprise_suite.dto.ChatResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +27,18 @@ public class DefaultChatService implements ChatService {
     public ChatResponse chat(String message) {
 
         PromptTemplate template = templateService.load("chat.st");
-        String prompt = template.render(Map.of("question", message));
+
+        Prompt prompt = template.create(
+                        Map.of(
+                                "question",
+                                message
+                        )
+                );
 
         log.info("Sending prompt to Google Gemini.");
 
-        String response = chatClient.prompt()
-                .user(prompt)
+        String response = chatClient
+                .prompt(prompt)
                 .call()
                 .content();
 
