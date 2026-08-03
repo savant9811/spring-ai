@@ -1,11 +1,14 @@
 package com.savant.spring_ai_enterprise_suite.prompt;
 
+import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -18,13 +21,21 @@ public class DefaultPromptProvider implements PromptProvider {
     }
 
     @Override
-    public Prompt chatPrompt(String userMessage) {
+    public Prompt chatPrompt(String question) {
 
-        PromptTemplate template = load("user/user-chat.st");
+        String systemText = loadTemplate("system/system-chat.st").render();
 
-        return template.create(
-                Map.of(
-                        "question",
+        String userText = loadTemplate("user/user-chat.st")
+                .render(Map.of(
+                        "question", question
+                ));
+
+        SystemMessage systemMessage = new SystemMessage(systemText);
+        UserMessage userMessage = new UserMessage(userText);
+
+        return new Prompt(
+                List.of(
+                        systemMessage,
                         userMessage
                 )
         );
@@ -33,7 +44,7 @@ public class DefaultPromptProvider implements PromptProvider {
     @Override
     public Prompt explainTopic(String topic, String difficulty, String language) {
 
-        PromptTemplate template = load("user/explain-topic.st");
+        PromptTemplate template = loadTemplate("user/explain-topic.st");
 
         return template.create(
                 Map.of(
@@ -44,11 +55,11 @@ public class DefaultPromptProvider implements PromptProvider {
         );
     }
 
-    private PromptTemplate load(String templateName) {
+    private PromptTemplate loadTemplate(String path) {
 
-        Resource resource = resourceLoader.getResource("classpath:prompts/" + templateName);
+        Resource resource = resourceLoader.getResource(
+                        "classpath:prompts/" + path);
+
         return new PromptTemplate(resource);
-
     }
-
 }
