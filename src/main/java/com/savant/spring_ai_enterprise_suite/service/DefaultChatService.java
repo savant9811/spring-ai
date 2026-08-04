@@ -26,7 +26,7 @@ public class DefaultChatService implements ChatService {
     }
 
     @Override
-    public ChatResponse chat(String message) {
+    public ChatResponse chat( String conversationId, String message) {
 
         GoogleGenAiChatOptions.Builder builder = GoogleGenAiChatOptions.builder()
                         .model(aiProperties.getModel())

@@ -6,6 +6,6 @@ import com.savant.spring_ai_enterprise_suite.dto.ChatResponse;
 
 public interface ChatService {
 
-    ChatResponse chat(String message);
+    ChatResponse chat(String conversationId ,String message);
 
 }

@@ -25,7 +25,7 @@ public class ChatController {
 
         return ApiResponse.success(
                 "AI response generated successfully.",
-                chatService.chat(request.message())
+                chatService.chat(request.conversationId(),request.message())
         );
     }
 
